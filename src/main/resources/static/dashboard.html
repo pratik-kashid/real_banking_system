@@ -1145,8 +1145,8 @@
         <form onsubmit="withdrawMoney(event)">
             <div class="form-group">
                 <label class="form-label">Account Number</label>
-                <input type="text" id="withdrawAccount" class="form-input" placeholder="Enter your account number" required>
-                <p class="form-hint">Enter an account number that exists in your banking profile</p>
+                <input type="text" id="withdrawAccount" class="form-input" readonly required>
+                <p class="form-hint">Withdrawals are allowed only from your own active account</p>
             </div>
             <div class="form-group">
                 <label class="form-label">Amount (₹)</label>
@@ -1576,22 +1576,7 @@
         const withdrawAccountNumber = document.getElementById('withdrawAccount').value.trim();
 
         if (!withdrawAccountNumber) {
-            showAlert('Please enter an account number.', 'error');
-            return;
-        }
-
-        try {
-            const accountCheckResponse = await fetch(`${API_URL}/accounts/${withdrawAccountNumber}`, {
-                headers: { 'Authorization': `Bearer ${authToken}` }
-            });
-            const accountCheckResult = await accountCheckResponse.json();
-
-            if (!accountCheckResponse.ok || !accountCheckResult.success) {
-                showAlert('Entered account number does not exist', 'error');
-                return;
-            }
-        } catch (error) {
-            showAlert('Unable to verify account number right now. Please try again.', 'error');
+            showAlert('No active account found for withdrawal.', 'error');
             return;
         }
 
@@ -1617,8 +1602,9 @@
             if (result.success) {
                 showAlert('Withdrawal successful!', 'success');
                 closeModal();
-                document.getElementById('withdrawAccount').value = '';
                 document.getElementById('withdrawPin').value = ''; // Clear PIN
+                document.getElementById('withdrawAmount').value = '';
+                document.getElementById('withdrawDesc').value = '';
                 loadAccounts();
             } else {
                 showAlert(result.message, 'error');

@@ -35,6 +35,10 @@ public class AccountService {
             throw new RuntimeException("User account is not verified");
         }
 
+        if (accountRepository.existsByUserAndActive(user, true)) {
+            throw new RuntimeException("Each user can only have one active account.");
+        }
+
         // Check if account number already exists
         if (accountRepository.existsByAccountNumber(request.getAccountNumber())) {
             throw new RuntimeException("Account number already exists. Please choose a different number.");
