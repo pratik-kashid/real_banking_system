@@ -1587,7 +1587,7 @@
             const accountCheckResult = await accountCheckResponse.json();
 
             if (!accountCheckResponse.ok || !accountCheckResult.success) {
-                showAlert(accountCheckResult.message || 'Entered account number does not exist in our system.', 'error');
+                showAlert('Entered account number does not exist', 'error');
                 return;
             }
         } catch (error) {
