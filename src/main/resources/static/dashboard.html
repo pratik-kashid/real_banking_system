@@ -227,9 +227,7 @@
         }
 
         .top-actions {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
+            display: none;
         }
 
         .action-btn {
@@ -964,10 +962,6 @@
             <button class="menu-btn" type="button" aria-label="Open navigation menu" onclick="toggleSidebar()">☰</button>
             <h1 class="page-title" id="pageTitle">Dashboard</h1>
         </div>
-        <div class="top-actions">
-            <button class="action-btn" onclick="openModal('withdraw')">💵 Withdraw</button>
-            <button class="action-btn" onclick="openModal('deposit')">💰 Deposit</button>
-        </div>
     </div>
 
     <div id="alertBox" class="alert"></div>
@@ -1151,7 +1145,8 @@
         <form onsubmit="withdrawMoney(event)">
             <div class="form-group">
                 <label class="form-label">Account Number</label>
-                <input type="text" id="withdrawAccount" class="form-input" readonly>
+                <input type="text" id="withdrawAccount" class="form-input" placeholder="Enter your account number" required>
+                <p class="form-hint">Enter an account number that exists in your banking profile</p>
             </div>
             <div class="form-group">
                 <label class="form-label">Amount (₹)</label>
@@ -1578,8 +1573,30 @@
     async function withdrawMoney(event) {
         event.preventDefault();
 
+        const withdrawAccountNumber = document.getElementById('withdrawAccount').value.trim();
+
+        if (!withdrawAccountNumber) {
+            showAlert('Please enter an account number.', 'error');
+            return;
+        }
+
+        try {
+            const accountCheckResponse = await fetch(`${API_URL}/accounts/${withdrawAccountNumber}`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            const accountCheckResult = await accountCheckResponse.json();
+
+            if (!accountCheckResponse.ok || !accountCheckResult.success) {
+                showAlert(accountCheckResult.message || 'Entered account number does not exist in our system.', 'error');
+                return;
+            }
+        } catch (error) {
+            showAlert('Unable to verify account number right now. Please try again.', 'error');
+            return;
+        }
+
         const data = {
-            accountNumber: document.getElementById('withdrawAccount').value,
+            accountNumber: withdrawAccountNumber,
             amount: parseFloat(document.getElementById('withdrawAmount').value),
             pin: document.getElementById('withdrawPin').value,
             description: document.getElementById('withdrawDesc').value || 'Withdrawal'
@@ -1600,6 +1617,7 @@
             if (result.success) {
                 showAlert('Withdrawal successful!', 'success');
                 closeModal();
+                document.getElementById('withdrawAccount').value = '';
                 document.getElementById('withdrawPin').value = ''; // Clear PIN
                 loadAccounts();
             } else {
@@ -1689,6 +1707,7 @@
         if (type === 'deposit') {
             document.getElementById('depositModal').classList.add('active');
         } else if (type === 'withdraw') {
+            document.getElementById('withdrawAccount').value = userAccount ? userAccount.accountNumber : '';
             document.getElementById('withdrawModal').classList.add('active');
         } else if (type === 'createAccount') {
             document.getElementById('createAccountModal').classList.add('active');
