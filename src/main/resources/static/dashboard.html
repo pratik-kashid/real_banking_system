@@ -33,6 +33,7 @@
             font-family: 'Outfit', sans-serif;
             background: var(--bg);
             color: var(--text);
+            overflow-x: hidden;
         }
 
         /* Sidebar */
@@ -46,6 +47,22 @@
             color: white;
             overflow-y: auto;
             z-index: 1000;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 37, 64, 0.45);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .sidebar-content {
@@ -180,6 +197,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 1rem;
+        }
+
+        .top-bar-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         .page-title {
@@ -189,9 +213,23 @@
             font-weight: 700;
         }
 
+        .menu-btn {
+            display: none;
+            width: 46px;
+            height: 46px;
+            border: none;
+            border-radius: 12px;
+            background: var(--primary);
+            color: white;
+            font-size: 1.4rem;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(10, 37, 64, 0.18);
+        }
+
         .top-actions {
             display: flex;
             gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .action-btn {
@@ -284,6 +322,7 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 3rem;
+            gap: 1rem;
         }
 
         .account-type-badge {
@@ -335,6 +374,7 @@
             display: flex;
             gap: 1rem;
             margin-top: 2rem;
+            flex-wrap: wrap;
         }
 
         .account-btn {
@@ -347,6 +387,7 @@
             font-weight: 600;
             transition: all 0.3s ease;
             font-size: 0.95rem;
+            flex: 1 1 180px;
         }
 
         .account-btn:hover {
@@ -400,6 +441,12 @@
         .transaction-table {
             width: 100%;
             border-collapse: collapse;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .transaction-table th {
@@ -625,37 +672,242 @@
             opacity: 0.5;
         }
 
+        .content-shell {
+            max-width: 640px;
+            width: 100%;
+        }
+
+        .settings-list {
+            max-width: 640px;
+            width: 100%;
+        }
+
+        .setting-card {
+            padding: 1.5rem;
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .setting-card:hover {
+            border-color: var(--accent);
+        }
+
         /* Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .account-details-grid {
+                gap: 1.5rem;
+            }
+
+            .detail-value {
+                font-size: 1.6rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
+                width: min(84vw, 320px);
+                box-shadow: 18px 0 50px rgba(10, 37, 64, 0.24);
             }
 
             .sidebar.active {
                 transform: translateX(0);
             }
 
+            .logout-btn {
+                position: sticky;
+                left: auto;
+                bottom: 1.25rem;
+                width: calc(100% - 2.5rem);
+                margin: 1.5rem 1.25rem 0;
+            }
+
             .main-content {
                 margin-left: 0;
+                padding: 1rem;
             }
 
             .account-details-grid {
                 grid-template-columns: 1fr;
-                gap: 2rem;
+                gap: 1.25rem;
             }
 
             .top-bar {
-                flex-direction: column;
-                gap: 1rem;
+                padding: 1rem 1.1rem;
+                border-radius: 18px;
+            }
+
+            .top-bar-title {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .menu-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .top-actions {
+                width: 100%;
+            }
+
+            .action-btn {
+                flex: 1 1 140px;
+                padding: 0.85rem 1rem;
+            }
+
+            .section {
+                padding: 1.25rem;
+                border-radius: 18px;
+                margin-bottom: 1rem;
+            }
+
+            .section-header {
+                margin-bottom: 1.25rem;
                 align-items: flex-start;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .section-title {
+                font-size: 1.35rem;
+            }
+
+            .account-card {
+                padding: 1.5rem;
+                border-radius: 18px;
+            }
+
+            .account-card::before {
+                width: 220px;
+                height: 220px;
+                top: -35%;
+                right: -28%;
+            }
+
+            .account-header {
+                flex-direction: column;
+                margin-bottom: 1.75rem;
+            }
+
+            .detail-value {
+                font-size: 1.45rem;
+            }
+
+            .detail-value.account-number {
+                font-size: 1.05rem;
+                letter-spacing: 1px;
+                word-break: break-all;
+            }
+
+            .account-btn {
+                width: 100%;
+                flex-basis: 100%;
+            }
+
+            .setup-card {
+                padding: 2.5rem 1.25rem;
+            }
+
+            .setup-card h2 {
+                font-size: 1.9rem;
+            }
+
+            .setup-icon {
+                font-size: 3.5rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .table-wrap {
+                margin: 0 -0.25rem;
+                padding-bottom: 0.35rem;
+            }
+
+            .transaction-table {
+                min-width: 640px;
+            }
+
+            .transaction-info {
+                min-width: 220px;
+            }
+
+            .modal-overlay {
+                align-items: flex-end;
+            }
+
+            .modal {
+                width: 100%;
+                max-width: none;
+                border-radius: 22px 22px 0 0;
+                padding: 1.4rem;
+                max-height: 88vh;
+            }
+
+            .modal-title {
+                font-size: 1.45rem;
+            }
+
+            .modal-actions {
+                flex-direction: column-reverse;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar-logo {
+                padding: 0 1.25rem;
+                margin-bottom: 2rem;
+                font-size: 1.5rem;
+            }
+
+            .user-info {
+                padding: 0 1.25rem 1.5rem;
+            }
+
+            .nav-link {
+                padding: 0.95rem 1.25rem;
+            }
+
+            .page-title {
+                font-size: 1.3rem;
+            }
+
+            .action-btn,
+            .setup-btn,
+            .submit-btn,
+            .btn-cancel {
+                width: 100%;
+            }
+
+            .detail-value {
+                font-size: 1.3rem;
+            }
+
+            .form-input,
+            .form-select {
+                padding: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <!-- Sidebar -->
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
     <div class="sidebar-content">
         <div class="sidebar-logo">
             <div class="logo-icon">BOP</div>
@@ -708,7 +960,10 @@
 <!-- Main Content -->
 <main class="main-content">
     <div class="top-bar">
-        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+        <div class="top-bar-title">
+            <button class="menu-btn" type="button" aria-label="Open navigation menu" onclick="toggleSidebar()">☰</button>
+            <h1 class="page-title" id="pageTitle">Dashboard</h1>
+        </div>
         <div class="top-actions">
             <button class="action-btn" onclick="openModal('withdraw')">💵 Withdraw</button>
             <button class="action-btn" onclick="openModal('deposit')">💰 Deposit</button>
@@ -760,7 +1015,7 @@
             <div class="section-header">
                 <h2 class="section-title">Transfer Money</h2>
             </div>
-            <div style="max-width: 600px;">
+            <div class="content-shell">
                 <form onsubmit="transferMoney(event)">
                     <div class="form-group">
                         <label class="form-label">From Account (Your Account)</label>
@@ -795,7 +1050,7 @@
             <div class="section-header">
                 <h2 class="section-title">Your Profile</h2>
             </div>
-            <div style="max-width: 600px;">
+            <div class="content-shell">
                 <div class="form-group">
                     <label class="form-label">Full Name</label>
                     <input type="text" id="profileFullName" class="form-input" readonly>
@@ -830,16 +1085,16 @@
             <div class="section-header">
                 <h2 class="section-title">Settings</h2>
             </div>
-            <div style="max-width: 600px;">
-                <div class="setting-item" style="padding: 1.5rem; background: white; border: 2px solid #E5E7EB; border-radius: 10px; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='#E5E7EB'">
+            <div class="settings-list">
+                <div class="setting-card">
                     <h4 style="margin-bottom: 0.5rem; color: var(--primary);">🔔 Notifications</h4>
                     <p style="color: var(--text-light); font-size: 0.9rem;">Manage your notification preferences</p>
                 </div>
-                <div class="setting-item" style="padding: 1.5rem; background: white; border: 2px solid #E5E7EB; border-radius: 10px; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='#E5E7EB'">
+                <div class="setting-card">
                     <h4 style="margin-bottom: 0.5rem; color: var(--primary);">🔒 Security</h4>
                     <p style="color: var(--text-light); font-size: 0.9rem;">Update password and security settings</p>
                 </div>
-                <div class="setting-item" style="padding: 1.5rem; background: white; border: 2px solid #E5E7EB; border-radius: 10px; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='#E5E7EB'">
+                <div class="setting-card">
                     <h4 style="margin-bottom: 0.5rem; color: var(--primary);">🌐 Language</h4>
                     <p style="color: var(--text-light); font-size: 0.9rem;">Choose your preferred language</p>
                 </div>
@@ -1154,44 +1409,46 @@
         }
 
         container.innerHTML = `
-            <table class="transaction-table">
-                <thead>
-                    <tr>
-                        <th>Transaction</th>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${transactions.map(txn => {
-                        const isCredit = txn.type === 'DEPOSIT' || txn.type === 'TRANSFER_IN';
-                        const iconClass = txn.type === 'DEPOSIT' ? 'icon-deposit' :
-                                        txn.type === 'WITHDRAWAL' ? 'icon-withdrawal' : 'icon-transfer';
-                        const icon = txn.type === 'DEPOSIT' ? '↓' :
-                                   txn.type === 'WITHDRAWAL' ? '↑' : '⇄';
+            <div class="table-wrap">
+                <table class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Transaction</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${transactions.map(txn => {
+                            const isCredit = txn.type === 'DEPOSIT' || txn.type === 'TRANSFER_IN';
+                            const iconClass = txn.type === 'DEPOSIT' ? 'icon-deposit' :
+                                            txn.type === 'WITHDRAWAL' ? 'icon-withdrawal' : 'icon-transfer';
+                            const icon = txn.type === 'DEPOSIT' ? '↓' :
+                                       txn.type === 'WITHDRAWAL' ? '↑' : '⇄';
 
-                        return `
-                            <tr>
-                                <td>
-                                    <div class="transaction-info">
-                                        <div class="transaction-icon ${iconClass}">${icon}</div>
-                                        <div class="transaction-details">
-                                            <h4>${txn.type.replace('_', ' ')}</h4>
-                                            <p>${txn.description || 'No description'}</p>
+                            return `
+                                <tr>
+                                    <td>
+                                        <div class="transaction-info">
+                                            <div class="transaction-icon ${iconClass}">${icon}</div>
+                                            <div class="transaction-details">
+                                                <h4>${txn.type.replace('_', ' ')}</h4>
+                                                <p>${txn.description || 'No description'}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td>${new Date(txn.timestamp).toLocaleDateString()}</td>
-                                <td class="${isCredit ? 'amount-credit' : 'amount-debit'}">
-                                    ${isCredit ? '+' : '-'}₹${txn.amount.toFixed(2)}
-                                </td>
-                                <td><span class="badge badge-success">${txn.status}</span></td>
-                            </tr>
-                        `;
-                    }).join('')}
-                </tbody>
-            </table>
+                                    </td>
+                                    <td>${new Date(txn.timestamp).toLocaleDateString()}</td>
+                                    <td class="${isCredit ? 'amount-credit' : 'amount-debit'}">
+                                        ${isCredit ? '+' : '-'}₹${txn.amount.toFixed(2)}
+                                    </td>
+                                    <td><span class="badge badge-success">${txn.status}</span></td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
         `;
     }
 
@@ -1227,48 +1484,62 @@
         }
 
         container.innerHTML = `
-            <table class="transaction-table">
-                <thead>
-                    <tr>
-                        <th>Transaction</th>
-                        <th>Date & Time</th>
-                        <th>Amount</th>
-                        <th>Balance After</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${transactions.map(txn => {
-                        const isCredit = txn.type === 'DEPOSIT' || txn.type === 'TRANSFER_IN';
-                        const iconClass = txn.type === 'DEPOSIT' ? 'icon-deposit' :
-                                        txn.type === 'WITHDRAWAL' ? 'icon-withdrawal' : 'icon-transfer';
-                        const icon = txn.type === 'DEPOSIT' ? '↓' :
-                                   txn.type === 'WITHDRAWAL' ? '↑' : '⇄';
+            <div class="table-wrap">
+                <table class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Transaction</th>
+                            <th>Date & Time</th>
+                            <th>Amount</th>
+                            <th>Balance After</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${transactions.map(txn => {
+                            const isCredit = txn.type === 'DEPOSIT' || txn.type === 'TRANSFER_IN';
+                            const iconClass = txn.type === 'DEPOSIT' ? 'icon-deposit' :
+                                            txn.type === 'WITHDRAWAL' ? 'icon-withdrawal' : 'icon-transfer';
+                            const icon = txn.type === 'DEPOSIT' ? '↓' :
+                                       txn.type === 'WITHDRAWAL' ? '↑' : '⇄';
 
-                        return `
-                            <tr>
-                                <td>
-                                    <div class="transaction-info">
-                                        <div class="transaction-icon ${iconClass}">${icon}</div>
-                                        <div class="transaction-details">
-                                            <h4>${txn.type.replace('_', ' ')}</h4>
-                                            <p>${txn.description || 'No description'}</p>
-                                            ${txn.relatedAccountNumber ? `<p style="font-size: 0.8rem;">Ref: ${txn.relatedAccountNumber}</p>` : ''}
+                            return `
+                                <tr>
+                                    <td>
+                                        <div class="transaction-info">
+                                            <div class="transaction-icon ${iconClass}">${icon}</div>
+                                            <div class="transaction-details">
+                                                <h4>${txn.type.replace('_', ' ')}</h4>
+                                                <p>${txn.description || 'No description'}</p>
+                                                ${txn.relatedAccountNumber ? `<p style="font-size: 0.8rem;">Ref: ${txn.relatedAccountNumber}</p>` : ''}
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td>${new Date(txn.timestamp).toLocaleString()}</td>
-                                <td class="${isCredit ? 'amount-credit' : 'amount-debit'}">
-                                    ${isCredit ? '+' : '-'}₹${txn.amount.toFixed(2)}
-                                </td>
-                                <td style="font-weight: 600;">₹${txn.balanceAfter.toFixed(2)}</td>
-                                <td><span class="badge badge-success">${txn.status}</span></td>
-                            </tr>
-                        `;
-                    }).join('')}
-                </tbody>
-            </table>
+                                    </td>
+                                    <td>${new Date(txn.timestamp).toLocaleString()}</td>
+                                    <td class="${isCredit ? 'amount-credit' : 'amount-debit'}">
+                                        ${isCredit ? '+' : '-'}₹${txn.amount.toFixed(2)}
+                                    </td>
+                                    <td style="font-weight: 600;">₹${txn.balanceAfter.toFixed(2)}</td>
+                                    <td><span class="badge badge-success">${txn.status}</span></td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
         `;
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('sidebarOverlay').classList.remove('active');
     }
 
     async function depositMoney(event) {
@@ -1408,6 +1679,10 @@
         if (sectionName === 'transactions') {
             loadAllTransactions();
         }
+
+        if (window.innerWidth <= 768) {
+            closeSidebar();
+        }
     }
 
     function openModal(type) {
@@ -1453,6 +1728,12 @@
                 closeModal();
             }
         });
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            closeSidebar();
+        }
     });
 
     // Initialize on load
