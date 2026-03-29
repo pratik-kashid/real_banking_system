@@ -1631,9 +1631,17 @@
     async function transferMoney(event) {
         event.preventDefault();
 
+        const fromAccountNumber = document.getElementById('transferFromAccount').value.trim();
+        const toAccountNumber = document.getElementById('transferToAccount').value.trim();
+
+        if (fromAccountNumber === toAccountNumber) {
+            showAlert('You cannot transfer money to the same account number.', 'error');
+            return;
+        }
+
         const data = {
-            fromAccountNumber: document.getElementById('transferFromAccount').value,
-            toAccountNumber: document.getElementById('transferToAccount').value,
+            fromAccountNumber,
+            toAccountNumber,
             amount: parseFloat(document.getElementById('transferAmount').value),
             pin: document.getElementById('transferPin').value,
             description: document.getElementById('transferDescription').value || 'Transfer'
