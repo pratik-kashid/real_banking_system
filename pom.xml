@@ -15,10 +15,6 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-        </dependency>
         <!--  Spring Boot Web for REST APIs  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
